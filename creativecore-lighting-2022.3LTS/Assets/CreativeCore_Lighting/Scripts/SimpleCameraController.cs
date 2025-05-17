@@ -74,6 +74,18 @@ namespace UnityTemplateProjects
         [Tooltip("Whether or not to invert our Y axis for mouse input to rotation.")]
         public bool invertY = false;
 
+        [Header("Mouse Follow Settings")]
+        [Tooltip("是否启用鼠标跟随模式")]
+        public bool enableMouseFollow = true;
+        
+        [Tooltip("屏幕中心区域大小，在此区域内鼠标不会引起相机旋转")]
+        [Range(0f, 0.5f)]
+        public float deadZoneRadius = 0.1f;
+        
+        [Tooltip("鼠标移动到屏幕边缘时的旋转速度乘数")]
+        [Range(0.1f, 10f)]
+        public float edgeSensitivity = 2.0f;
+        
 #if ENABLE_INPUT_SYSTEM
         InputAction movementAction;
         InputAction verticalMovementAction;
@@ -162,7 +174,6 @@ namespace UnityTemplateProjects
         void Update()
         {
             // Exit Sample  
-
             if (IsEscapePressed())
             {
                 Application.Quit();
@@ -171,22 +182,24 @@ namespace UnityTemplateProjects
 				#endif
             }
 
-            // Hide and lock cursor when right mouse button pressed
-            if (IsRightMouseButtonDown())
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
+            // 移除锁定鼠标的逻辑，让鼠标可以自由移动
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
 
-            // Unlock and show cursor when right mouse button released
-            if (IsRightMouseButtonUp())
+            // Rotation - 根据鼠标在屏幕中的位置计算旋转
+            if (enableMouseFollow)
             {
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
+                Vector2 mousePosition = GetNormalizedMousePosition();
+                Vector2 rotationDelta = CalculateRotationFromMousePosition(mousePosition);
+                
+                var mouseSensitivityFactor = mouseSensitivityCurve.Evaluate(rotationDelta.magnitude);
 
-            // Rotation
-            if (IsCameraRotationAllowed())
+                m_TargetCameraState.yaw += rotationDelta.x * mouseSensitivityFactor * Time.deltaTime * 5;
+                m_TargetCameraState.pitch += rotationDelta.y * mouseSensitivityFactor * Time.deltaTime * 5;
+            }
+            else if (IsCameraRotationAllowed())
             {
+                // 保留原始逻辑作为备选
                 var mouseMovement = GetInputLookRotation() * Time.deltaTime * 5;
                 if (invertY)
                     mouseMovement.y = -mouseMovement.y;
@@ -219,6 +232,51 @@ namespace UnityTemplateProjects
             m_InterpolatingCameraState.LerpTowards(m_TargetCameraState, positionLerpPct, rotationLerpPct);
 
             m_InterpolatingCameraState.UpdateTransform(transform);
+        }
+
+        // 获取归一化的鼠标位置（从-1到1）
+        Vector2 GetNormalizedMousePosition()
+        {
+#if ENABLE_INPUT_SYSTEM
+            if(Mouse.current != null)
+            {
+                Vector2 mousePos = Mouse.current.position.ReadValue();
+                return new Vector2(
+                    (mousePos.x / Screen.width) * 2 - 1,
+                    (mousePos.y / Screen.height) * 2 - 1
+                );
+            }
+            return Vector2.zero;
+#else
+            return new Vector2(
+                (Input.mousePosition.x / Screen.width) * 2 - 1,
+                (Input.mousePosition.y / Screen.height) * 2 - 1
+            );
+#endif
+        }
+
+        // 根据鼠标位置计算摄像机旋转增量
+        Vector2 CalculateRotationFromMousePosition(Vector2 normalizedMousePos)
+        {
+            Vector2 rotationDelta = Vector2.zero;
+            
+            // 计算鼠标距离屏幕中心的距离
+            float distanceFromCenter = normalizedMousePos.magnitude;
+            
+            // 如果鼠标在中心死区之外，才计算旋转
+            if (distanceFromCenter > deadZoneRadius)
+            {
+                // 计算旋转方向和强度
+                rotationDelta.x = normalizedMousePos.x;
+                // 对于Y轴，如果invertY为true，则反转方向
+                rotationDelta.y = invertY ? -normalizedMousePos.y : normalizedMousePos.y;
+                
+                // 调整旋转强度，使其在死区边缘为0，屏幕边缘为最大
+                float rotationStrength = Mathf.InverseLerp(deadZoneRadius, 1.0f, distanceFromCenter);
+                rotationDelta *= rotationStrength * edgeSensitivity;
+            }
+            
+            return rotationDelta;
         }
 
         float GetBoostFactor()
@@ -263,10 +321,14 @@ namespace UnityTemplateProjects
         bool IsCameraRotationAllowed()
         {
 #if ENABLE_INPUT_SYSTEM
+            // 在鼠标跟随模式下，始终允许旋转
+            if (enableMouseFollow) return true;
+            
             bool canRotate = Mouse.current != null ? Mouse.current.rightButton.isPressed : false;
             canRotate |= Gamepad.current != null ? Gamepad.current.rightStick.ReadValue().magnitude > 0 : false;
             return canRotate;
 #else
+            if (enableMouseFollow) return true;
             return Input.GetMouseButton(1);
 #endif
         }
