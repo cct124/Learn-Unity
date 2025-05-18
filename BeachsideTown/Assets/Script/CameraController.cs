@@ -9,6 +9,15 @@ public class CameraController : MonoBehaviour
 
     private float rotationX = 0f;
     private float rotationY = 0f;
+    private Vector3 initialRotation; // 初始旋转角度
+
+    void Start()
+    {
+        // 记录初始旋转角度
+        initialRotation = transform.localEulerAngles;
+        rotationX = initialRotation.x;
+        rotationY = initialRotation.y;
+    }
 
     // Update is called once per frame
     void Update()
@@ -30,7 +39,7 @@ public class CameraController : MonoBehaviour
             // 限制上下旋转角度
             rotationX = Mathf.Clamp(rotationX, -90f, 90f);
 
-            // 应用旋转
+            // 应用旋转时加上初始旋转角度
             transform.localEulerAngles = new Vector3(rotationX, rotationY, 0f);
         }
     }
