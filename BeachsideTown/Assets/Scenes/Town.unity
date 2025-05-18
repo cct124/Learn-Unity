@@ -245,7 +245,34 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1640762609}
+    - targetCorrespondingSourceObject: {fileID: 7668127380145894093, guid: 853ee6db66da89246a05a521c995da71,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1874783355}
+    - targetCorrespondingSourceObject: {fileID: 7668127381131090524, guid: 853ee6db66da89246a05a521c995da71,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1258913776}
   m_SourcePrefab: {fileID: 100100000, guid: 853ee6db66da89246a05a521c995da71, type: 3}
+--- !u!1 &1258913773 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7668127381131090524, guid: 853ee6db66da89246a05a521c995da71,
+    type: 3}
+  m_PrefabInstance: {fileID: 566416295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1258913776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258913773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3110a365a13bbd4182606ef800cb2d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationType: 0
 --- !u!1 &1640762607 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7398218916422323976, guid: 853ee6db66da89246a05a521c995da71,
@@ -287,6 +314,7 @@ GameObject:
   - component: {fileID: 1734848527}
   - component: {fileID: 1734848526}
   - component: {fileID: 1734848529}
+  - component: {fileID: 1734848530}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -412,6 +440,39 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &1734848530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1734848525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c8e655e39e0c641a89cf1744addd7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  mouseSensitivity: 2
+--- !u!1 &1874783352 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7668127380145894093, guid: 853ee6db66da89246a05a521c995da71,
+    type: 3}
+  m_PrefabInstance: {fileID: 566416295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1874783355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874783352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3110a365a13bbd4182606ef800cb2d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animationType: 1
 --- !u!1 &1896179531
 GameObject:
   m_ObjectHideFlags: 0
