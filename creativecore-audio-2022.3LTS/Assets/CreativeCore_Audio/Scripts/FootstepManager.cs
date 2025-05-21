@@ -23,7 +23,8 @@ public class FootstepManager : MonoBehaviour
 
     public void PlayStep ()
     {
-        if(currentList == null)
+        Debug.Log("PlayStep");
+        if (currentList == null)
             return;
         
         AudioClip clip = currentList[Random.Range(0, currentList.Count)];
