@@ -11,8 +11,20 @@ public class PeopleAnimationController : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+    }
 
-        anim.SetInteger("Dance", animationType);
+
+    void OnToggleChanged(bool isOn)
+    {
+        Debug.Log("Toggle changed: " + isOn);
+        if (isOn)
+        {
+            anim.SetInteger("Dance", animationType);
+        }
+        else
+        {
+            anim.SetInteger("Dance", 0);
+        }
 
     }
 
